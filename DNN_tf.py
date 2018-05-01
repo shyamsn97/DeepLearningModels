@@ -116,6 +116,6 @@ class Densetf():
  # n_inputs = 28*28
  # numnodes = [20,20]
  # n_outputs = 10
- # nn = NeuralNetHelper(n_inputs,2,numnodes,n_outputs,mnist.train.images,mnist.train.labels)\n
+ # nn = Densetf(n_inputs,2,numnodes,n_outputs,mnist.train.images,mnist.train.labels)\n
  # print nn.n_inputs\n
  # nn.create_model_and_train()

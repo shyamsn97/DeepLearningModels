@@ -4,16 +4,18 @@ import tensorflow as tf
 from keras import *
 from keras.layers import *
 from keras import backend as K
+from keras.utils import np_utils # utilities for one-hot encoding of ground truth values
 
-class MultiChannel1DCNN():
+
+class MultiChannel2DCNN():
     """
-    Multi Channel Convolutional Neural network built with keras
-    Can customize how many channels, kernel size for each channel, and the number of filters
+    MultiChannelCNN that has different kernel sizes to account for different scales of local dependencies
     """
     saved = 0
     
     def __init__(self, X,y,models=[]):
-        self.X = np.expand_dims(X, axis=2) #need to add an extra column, 1d convolution needs to "slide" accross
+        #self.X = np.expand_dims(X, axis=2)
+        self.X = X
         self.y = y
         self.models = models
         
@@ -26,30 +28,31 @@ class MultiChannel1DCNN():
         inputlayers = {}
         layers = {}
         flats = {}
-        length = self.X.shape[1]
+        height = self.X.shape[1]
+        length = self.X.shape[2]
+        print(length)
         for i in range(channels):
-            print i
-            inputlayers["input"+ str(i)] = Input(shape=(length,1))
-            print inputlayers["input"+str(i)]
-            layers["conv" + str(i)] = Conv1D(filters=num_filters,input_shape=(length, 1), kernel_size=kernel_size[i], activation='relu')(inputlayers["input" + str(i)])
+            inputlayers["input"+ str(i)] = Input(shape=(height,length,1))
+            layers["conv" + str(i)] = Conv2D(filters=num_filters,input_shape=(height,length), kernel_size=(kernel_size[i],kernel_size[i]), activation='relu')(inputlayers["input" + str(i)])                        
             layers["dropout" + str(i)] =  Dropout(0.5)(layers["conv" + str(i)])
-            layers["pool" + str(i)] = MaxPooling1D(pool_size=4)(layers["dropout" + str(i)])
+            layers["pool" + str(i)] = MaxPooling2D(pool_size=(2, 2))(layers["dropout" + str(i)])
             flats["flat" + str(i)] = Flatten()(layers["pool" + str(i)])
         
         merge = concatenate(list(flats.values()))
-        dense = Dense(10, activation='relu')(merge)
-        outputs = Dense(10, activation='sigmoid')(dense)
+        dense = Dense(25, activation='relu')(merge)
+        outputs = Dense(self.y.shape[1], activation='sigmoid')(dense)
         model = Model(inputs=list(inputlayers.values()), outputs=outputs)
+#        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.models.append(model)
     
     #train using custom params
     def train(self,model,epochs,channels,batch_size):
-        
         inp = []
+        X = self.X.reshape(self.X.shape[0],self.X.shape[1],self.X.shape[2],1)
         for i in range(channels):
-            inp.append(self.X)
+            inp.append(X)
         
 #         model.fit(inp, self.y,validation_split=0.1, epochs=epochs, batch_size=batch_size,verbose=1)
         model.fit(inp, self.y,validation_split=0.1, epochs=epochs,verbose=1)
@@ -59,13 +62,14 @@ class MultiChannel1DCNN():
             model.save('multichannelcnn.h5')
         else:
             print("Already Saved")
-        loss, acc = model.evaluate([self.X,self.X,self.X], self.y, verbose=0)
+        loss, acc = model.evaluate(inp, self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         
         return model
     
     #predict
     def predict(self,model,data):
+        
         #model = load_model('multichannelcnn.h5')
         predicts = model.predict(data)
 
