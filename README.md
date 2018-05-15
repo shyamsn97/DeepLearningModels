@@ -1,2 +1,10 @@
-# TF-Keras_AI
-Machine Learning and Deep Learning methods implemented in keras and Tensorflow
+
+## Popular Deep Learning models implemented in Keras and Tensorflow
+
+### Models Implemented:
+  - DeepNeuralNetwork
+  - MultiChannel CNN
+  - ALL-CNN-C
+
+
+
