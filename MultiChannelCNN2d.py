@@ -42,7 +42,6 @@ class MultiChannel2DCNN():
         dense = Dense(25, activation='relu')(merge)
         outputs = Dense(self.y.shape[1], activation='sigmoid')(dense)
         model = Model(inputs=list(inputlayers.values()), outputs=outputs)
-#        model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         print(model.summary())
         self.models.append(model)
