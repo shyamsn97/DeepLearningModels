@@ -56,7 +56,8 @@ class AllCNN():
         conv8 = Conv2D(filters=192,kernel_size=1,border_mode='valid',activation="relu")(conv7)
         conv9 = Conv2D(filters=n_outputs,kernel_size=1,border_mode='valid',activation="relu")(conv8)
         global_averaging = GlobalAveragePooling2D()(conv9)
-        model = Model(inputs=inp, outputs=global_averaging)
+        softmax = Softmax(10)(global_averaging)
+        model = Model(inputs=inp, outputs=softmax)
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
         print(model.summary())
@@ -74,7 +75,7 @@ class AllCNN():
         
     def predict(self,X):
         
-        if len(X.shape) == 3: #if X is one image
+        if len(X.shape) == 3:
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)
         return np.argmax(predictions)
