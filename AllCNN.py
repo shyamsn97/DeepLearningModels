@@ -74,7 +74,8 @@ class AllCNN():
         
     def predict(self,X):
         
-        X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
+        if len(X.shape) == 3: #if X is one image
+            X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)
         return np.argmax(predictions)
     
