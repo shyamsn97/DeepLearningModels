@@ -56,7 +56,7 @@ class AllCNN():
         conv8 = Conv2D(filters=192,kernel_size=1,border_mode='valid',activation="relu")(conv7)
         conv9 = Conv2D(filters=n_outputs,kernel_size=1,border_mode='valid',activation="relu")(conv8)
         global_averaging = GlobalAveragePooling2D()(conv9)
-        softmax = Softmax(10)(global_averaging)
+        softmax = Softmax(n_outputs)(global_averaging)
         model = Model(inputs=inp, outputs=softmax)
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
         model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
