@@ -16,6 +16,10 @@ class VGG16():
     VGG16 net implemented with keras
     introduced in the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition"
     https://arxiv.org/abs/1409.1556
+    Parameters:
+        X: numpy array data matrix of image pixel intensities
+        y: numpy array of labels, to_categorical changes it to a sparse binary matrix
+        weights: name of file that denotes weights to load in
     """
     def __init__(self,X,y,weights="None"):
         
@@ -79,10 +83,11 @@ class VGG16():
     def save_picture(self,filename):
         plot_model(self.model, to_file=filename)
         
-    def train(self,epochs):
+    def train(self,epochs,save=False):
 
         self.model.fit(self.X, self.y ,validation_split=0.1, epochs=epochs,verbose=1)
-        self.model.save('saved_models/VGG16.h5')
+        if save == True:
+            self.model.save('saved_models/VGG16.h5')
         loss, acc = self.model.evaluate(self.X, self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         

@@ -67,10 +67,11 @@ class AllCNN():
     def save_picture(self,filename):
         plot_model(self.model, to_file=filename)
         
-    def train(self,epochs):
+    def train(self,epochs,save=False):
 
         self.model.fit(self.X, self.y ,validation_split=0.1, epochs=epochs,verbose=1)
-        self.model.save('saved_models/allcnn.h5')
+        if save == True:
+            self.model.save('saved_models/AllCNN.h5')
         loss, acc = self.model.evaluate(self.X, self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         

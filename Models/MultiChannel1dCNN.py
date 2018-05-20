@@ -45,7 +45,7 @@ class MultiChannel1DCNN():
         self.models.append(model)
     
     #train using custom params
-    def train(self,model,epochs,channels,batch_size):
+    def train(self,model,epochs,channels,batch_size,save=False):
         
         inp = []
         for i in range(channels):
@@ -55,10 +55,8 @@ class MultiChannel1DCNN():
         model.fit(inp, self.y,validation_split=0.1, epochs=epochs,verbose=1)
 
         
-        if MultiChannelCNN.saved < 1:
+        if save == True:
             model.save('multichannelcnn.h5')
-        else:
-            print("Already Saved")
         loss, acc = model.evaluate([self.X,self.X,self.X], self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         
