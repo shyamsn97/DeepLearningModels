@@ -67,7 +67,8 @@ class AlexNet():
         softmax = Softmax(n_outputs)(dropout6)
         
         model = Model(inputs=inp,outputs=softmax)
-        model.compile(loss='categorical_crossentropy',optimizer="adam",metrics=['accuracy'])
+        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
+        model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
         self.model = model
         print(self.model.summary())
         
