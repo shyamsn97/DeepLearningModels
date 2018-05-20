@@ -6,6 +6,7 @@
   - MultiChannel CNN
   - ALL-CNN-C
   - VGG16
+  - AlexNet
 
 
 
