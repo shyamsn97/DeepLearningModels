@@ -11,11 +11,11 @@ from keras.optimizers import SGD
 import pydot
 import graphviz
 
-class AlexNet():
+class LeNet5():
     """
-    AlexNet implemented with Keras
-    introduced in the paper "ImageNet Classification with Deep Convolutional Neural Networks"
-    https://www.nvidia.cn/content/tesla/pdf/machine-learning/imagenet-classification-with-deep-convolutional-nn.pdf
+    LeNet5 implemented with Keras
+    introduced in the paper "Gradient-Based Learning Applied to Document Recognition"
+    http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf    
     Parameters:
         X: numpy array data matrix of image pixel intensities
         y: numpy array of labels, to_categorical changes it to a sparse binary matrix
@@ -33,6 +33,14 @@ class AlexNet():
             self.initialize()
         else:
             self.model = load_model(weights)
+            
+    def reshape_matrix(self,X):
+        
+        if len(X.shape) == 3:
+            X = X.reshape(X.shape[0],X.shape[1],X.shape[2],1)
+            return X
+        else:
+            return X
         
     def initialize(self):
         
@@ -42,32 +50,24 @@ class AlexNet():
         height = self.X.shape[1]
         width = self.X.shape[2]
         
-        inp = Input(shape=(height,width,3))
-        conv1 = Conv2D(96,kernel_size=11,strides=4,border_mode='valid',activation='relu')(inp)
-        max1 = MaxPool2D(3,strides=2,border_mode='same')(conv1)
-        dropout1 = Dropout(0.5)(max1)
-        normal1 = BatchNormalization()(dropout1)
-        conv2 = Conv2D(256,kernel_size=5,border_mode='same')(normal1)
-        max2 = MaxPool2D(3,strides=2,border_mode='same')(conv2)
-        dropout2 = Dropout(0.5)(max2)
-        normal2 = BatchNormalization()(dropout2)
-        conv3 = Conv2D(384,kernel_size=3,border_mode='same')(normal2)
-        conv4 = Conv2D(384,kernel_size=3,border_mode='same')(conv3)
-        conv5 = Conv2D(256,kernel_size=5,border_mode='same')(conv4)
-        max3 = MaxPool2D(3,strides=2,border_mode='same')(conv5)
-        dropout3 = Dropout(0.5)(max3)
-        flatten = Flatten()(dropout3)
-        dense1 = Dense(4096,activation="relu")(flatten)
-        dropout4 = Dropout(0.5)(dense1)
-        dense2 = Dense(4096,activation="relu")(dropout4)
-        dropout5 = Dropout(0.5)(dense2)
-        dense3 = Dense(n_outputs,activation="softmax")(dropout5)
-        dropout6 = Dropout(0.5)(dense3)
-        softmax = Softmax(n_outputs)(dropout6)
+        if len(self.X.shape) == 3:
+            inp = Input(shape=(height,width,1))
+            self.X = self.reshape_matrix(self.X)
+        else:
+            inp = Input(shape=(height,width,3))
+            
+        conv1 = Conv2D(6,kernel_size=5,border_mode='same',activation='relu')(inp)
+        max1 = MaxPool2D(2,border_mode='same')(conv1)
+        conv2 = Conv2D(16,kernel_size=5,border_mode='same',activation='relu')(max1)
+        max2 = MaxPool2D(2,border_mode='same')(conv2)
+        flatten = Flatten()(max2)
+        dense1 = Dense(120,activation='tanh')(flatten)
+        dense2 = Dense(84,activation='tanh')(dense1)
+        dense3 = Dense(n_outputs,activation='linear')(dense2)
+        softmax = Softmax(n_outputs)(dense3)
         
         model = Model(inputs=inp,outputs=softmax)
-        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-        model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy',optimizer="adam",metrics=['accuracy'])
         self.model = model
         print(self.model.summary())
         
@@ -78,7 +78,7 @@ class AlexNet():
 
         self.model.fit(self.X, self.y ,validation_split=0.1, epochs=epochs,verbose=1)
         if save == True:
-            self.model.save('saved_models/AlexNet.h5')
+            self.model.save('saved_models/LeNet5.h5')
         loss, acc = self.model.evaluate(self.X, self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         
@@ -88,5 +88,4 @@ class AlexNet():
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)
         return np.argmax(predictions)
-        
         

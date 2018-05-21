@@ -67,7 +67,7 @@ class AllCNN():
     def save_picture(self,filename):
         plot_model(self.model, to_file=filename)
         
-    def train(self,epochs,save=False):
+    def train(self,epochs,save=True):
 
         self.model.fit(self.X, self.y ,validation_split=0.1, epochs=epochs,verbose=1)
         if save == True:

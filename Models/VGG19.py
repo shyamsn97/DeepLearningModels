@@ -11,9 +11,9 @@ from keras.optimizers import SGD
 import pydot
 import graphviz
 
-class VGG16():
+class VGG19():
     """
-    VGG16 net implemented with keras
+    VGG19 net implemented with keras
     introduced in the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition"
     https://arxiv.org/abs/1409.1556
     Parameters:
@@ -59,11 +59,13 @@ class VGG16():
         conv8 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(dropout3)
         conv9 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv8)
         conv10 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv9)
-        max4 = MaxPool2D(2,border_mode='same')(conv10)
+        conv11 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv10)
+        max4 = MaxPool2D(2,border_mode='same')(conv11)
         dropout4 = Dropout(0.5)(max4)
-        conv11 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(dropout4)
-        conv12 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv11)
+        conv12 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(dropout4)
         conv13 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv12)
+        conv14 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv13)
+        conv15 = Conv2D(512,kernel_size=3,border_mode='same',activation='relu')(conv14)
         max5 = MaxPool2D(2,border_mode='same')(conv13)
         dropout5 = Dropout(0.5)(max5)
         flatten = Flatten()(dropout5)
