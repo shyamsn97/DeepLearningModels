@@ -1,5 +1,5 @@
 
-## Popular Deep Learning models implemented in Keras and Tensorflow
+## Popular Deep Learning models implemented from the ground up in Keras and Tensorflow
 
 ### Models Implemented:
   - AlexNet
