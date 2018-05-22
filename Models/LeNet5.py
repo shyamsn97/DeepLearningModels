@@ -9,8 +9,8 @@ from keras.utils import to_categorical
 from keras.models import *
 from keras.optimizers import SGD
 from keras.datasets import mnist
-import pydot
-import graphviz
+# import pydot
+# import graphviz
 
 class LeNet5():
     """
