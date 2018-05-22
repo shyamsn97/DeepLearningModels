@@ -82,6 +82,3 @@ class AllCNN():
         predictions = self.model.predict(X)
         return np.argmax(predictions)
     
-    
-        
-

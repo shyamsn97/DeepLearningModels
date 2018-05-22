@@ -8,6 +8,7 @@ from keras.utils import plot_model
 from keras.utils import to_categorical
 from keras.models import *
 from keras.optimizers import SGD
+from keras.datasets import mnist
 import pydot
 import graphviz
 
@@ -89,3 +90,9 @@ class LeNet5():
         predictions = self.model.predict(X)
         return np.argmax(predictions)
         
+if __name__ == '__main__':
+
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    lenet = LeNet5(X_train,y_train)
+    lenet.train(10)
+    lenet.predict(X_train[0])
