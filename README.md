@@ -9,6 +9,7 @@
   - MultiChannel CNN
   - VGG16
   - VGG19
+  - ZFNet
 
 
 
