@@ -18,7 +18,7 @@ class LeNet5():
     introduced in the paper "Gradient-Based Learning Applied to Document Recognition"
     http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf    
     Parameters:
-        X: numpy array data matrix of image pixel intensities
+        X: numpy array data matrix 
         y: numpy array of labels, to_categorical changes it to a sparse binary matrix
         weights: name of file that denotes weights to load in
     """

@@ -19,7 +19,7 @@ class AllCNN():
     uses Global Average Pooling instead of a dense layer as well
     Specifically used with images as input
     Parameters:
-        X: numpy array data matrix of image pixel intensities
+        X: numpy array data matrix
         y: numpy array of labels, to_categorical changes it to a sparse binary matrix
         weights: name of file that denotes weights to load in
     """

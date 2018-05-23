@@ -17,7 +17,7 @@ class VGG16():
     introduced in the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition"
     https://arxiv.org/abs/1409.1556
     Parameters:
-        X: numpy array data matrix of image pixel intensities
+        X: numpy array data matrix
         y: numpy array of labels, to_categorical changes it to a sparse binary matrix
         weights: name of file that denotes weights to load in
     """

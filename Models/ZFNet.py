@@ -11,11 +11,11 @@ from keras.optimizers import SGD
 import pydot
 import graphviz
 
-class AlexNet():
+class ZFNet():
     """
-    AlexNet implemented with Keras
-    introduced in the paper "ImageNet Classification with Deep Convolutional Neural Networks"
-    https://www.nvidia.cn/content/tesla/pdf/machine-learning/imagenet-classification-with-deep-convolutional-nn.pdf
+    ZFNet implemented with Keras
+    introduced in the paper "Visualizing and Understanding Convolutional Networks"
+    https://arxiv.org/pdf/1311.2901.pdf   
     Parameters:
         X: numpy array data matrix 
         y: numpy array of labels, to_categorical changes it to a sparse binary matrix
@@ -43,7 +43,7 @@ class AlexNet():
         width = self.X.shape[2]
         
         inp = Input(shape=(height,width,3))
-        conv1 = Conv2D(96,kernel_size=11,strides=4,border_mode='valid',activation='relu')(inp)
+        conv1 = Conv2D(96,kernel_size=7,strides=2,border_mode='valid',activation='relu')(inp)
         max1 = MaxPool2D(3,strides=2,border_mode='same')(conv1)
         dropout1 = Dropout(0.5)(max1)
         normal1 = BatchNormalization()(dropout1)
@@ -51,9 +51,9 @@ class AlexNet():
         max2 = MaxPool2D(3,strides=2,border_mode='same')(conv2)
         dropout2 = Dropout(0.5)(max2)
         normal2 = BatchNormalization()(dropout2)
-        conv3 = Conv2D(384,kernel_size=3,border_mode='same')(normal2)
-        conv4 = Conv2D(384,kernel_size=3,border_mode='same')(conv3)
-        conv5 = Conv2D(256,kernel_size=5,border_mode='same')(conv4)
+        conv3 = Conv2D(512,kernel_size=3,border_mode='same')(normal2)
+        conv4 = Conv2D(1024,kernel_size=3,border_mode='same')(conv3)
+        conv5 = Conv2D(512,kernel_size=5,border_mode='same')(conv4)
         max3 = MaxPool2D(3,strides=2,border_mode='same')(conv5)
         dropout3 = Dropout(0.5)(max3)
         flatten = Flatten()(dropout3)
@@ -66,8 +66,7 @@ class AlexNet():
         softmax = Softmax(n_outputs)(dropout6)
         
         model = Model(inputs=inp,outputs=softmax)
-        sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
-        model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
+        model.compile(loss='categorical_crossentropy',optimizer="adam",metrics=['accuracy'])
         self.model = model
         print(self.model.summary())
         
@@ -78,7 +77,7 @@ class AlexNet():
 
         self.model.fit(self.X, self.y ,validation_split=0.1, epochs=epochs,verbose=1)
         if save == True:
-            self.model.save('saved_models/AlexNet.h5')
+            self.model.save('saved_models/ZFNet.h5')
         loss, acc = self.model.evaluate(self.X, self.y, verbose=0)
         print('Train Accuracy: %f' % (acc*100))
         
@@ -88,5 +87,4 @@ class AlexNet():
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)
         return np.argmax(predictions)
-        
         
