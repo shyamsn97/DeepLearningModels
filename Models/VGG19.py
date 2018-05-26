@@ -73,9 +73,8 @@ class VGG19():
         dropout6 = Dropout(0.5)(dense1)
         dense2 = Dense(4096,activation='relu')(dropout6)
         dropout7 = Dropout(0.5)(dense2)
-        dense3 = Dense(n_outputs,activation='relu')(dropout7)
-        dropout8 = Dropout(0.5)(dense3)
-        softmax = Softmax(n_outputs)(dropout8)
+        dense3 = Dense(n_outputs,activation='linear')(dropout7)
+        softmax = Softmax(n_outputs)(dense3)
         
         model = Model(inputs=inp,outputs=softmax)
         model.compile(loss='categorical_crossentropy',optimizer="adam",metrics=['accuracy'])

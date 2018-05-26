@@ -61,9 +61,8 @@ class ZFNet():
         dropout4 = Dropout(0.5)(dense1)
         dense2 = Dense(4096,activation="relu")(dropout4)
         dropout5 = Dropout(0.5)(dense2)
-        dense3 = Dense(n_outputs,activation="softmax")(dropout5)
-        dropout6 = Dropout(0.5)(dense3)
-        softmax = Softmax(n_outputs)(dropout6)
+        dense3 = Dense(n_outputs,activation="linear")(dropout5)
+        softmax = Softmax(n_outputs)(dense3)
         
         model = Model(inputs=inp,outputs=softmax)
         model.compile(loss='categorical_crossentropy',optimizer="adam",metrics=['accuracy'])

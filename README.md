@@ -4,9 +4,10 @@
 ### Models Implemented:
   - AlexNet
   - All-CNN-C
-  - DeepNeuralNetwork
+  - General DeepNeuralNetwork
+  - GoogLeNet (Inception v1)
   - LeNet-5
-  - MultiChannel CNN
+  - General MultiChannel CNN
   - VGG16
   - VGG19
   - ZFNet
