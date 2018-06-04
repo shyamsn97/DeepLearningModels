@@ -9,8 +9,8 @@ from keras.utils import to_categorical
 from keras.models import *
 from keras.optimizers import SGD
 from keras.datasets import mnist
-# import pydot
-# import graphviz
+import pydot
+import graphviz
 
 class LeNet5():
     """
@@ -51,12 +51,12 @@ class LeNet5():
         height = self.X.shape[1]
         width = self.X.shape[2]
         
-        if len(self.X.shape) == 3:
-            inp = Input(shape=(height,width,1))
-            self.X = self.reshape_matrix(self.X)
+       if len(self.X.shape) == 3:
+            self.X = self.X.reshape(self.X.shape[0],self.X.shape[1],self.X.shape[2],1)
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],1))
         else:
-            inp = Input(shape=(height,width,3))
-            
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],3))
+
         conv1 = Conv2D(6,kernel_size=5,border_mode='same',activation='relu')(inp)
         max1 = MaxPool2D(2,border_mode='same')(conv1)
         conv2 = Conv2D(16,kernel_size=5,border_mode='same',activation='relu')(max1)
@@ -94,5 +94,5 @@ if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     lenet = LeNet5(X_train,y_train)
-    lenet.train(10)
+    lenet.train(1)
     lenet.predict(X_train[0])

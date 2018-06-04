@@ -8,6 +8,7 @@ from keras.utils import plot_model
 from keras.utils import to_categorical
 from keras.models import *
 from keras.optimizers import SGD
+from keras.datasets import mnist
 import pydot
 import graphviz
 
@@ -42,7 +43,12 @@ class AlexNet():
         height = self.X.shape[1]
         width = self.X.shape[2]
         
-        inp = Input(shape=(height,width,3))
+        if len(self.X.shape) == 3:
+            self.X = self.X.reshape(self.X.shape[0],self.X.shape[1],self.X.shape[2],1)
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],1))
+        else:
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],3))
+
         conv1 = Conv2D(96,kernel_size=11,strides=4,border_mode='valid',activation='relu')(inp)
         max1 = MaxPool2D(3,strides=2,border_mode='same')(conv1)
         dropout1 = Dropout(0.5)(max1)
@@ -87,5 +93,12 @@ class AlexNet():
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)
         return np.argmax(predictions)
+
+if __name__ == '__main__':
+
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    model = AlexNet(X_train,y_train)
+    model.train(1)
+    model.predict(X_train[0])
         
         

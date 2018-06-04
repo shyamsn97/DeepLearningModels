@@ -8,6 +8,8 @@ from keras.utils import plot_model
 from keras.utils import to_categorical
 from keras.models import *
 from keras.optimizers import SGD
+from keras.datasets import mnist
+from keras.regularizers import l2
 import pydot
 import graphviz
 
@@ -61,7 +63,7 @@ class GoogLeNet():
         """
             creates auxillary output
         """
-        avg = AveragePooling2D(5,strides=3,border_mode='valid')(prev_layer)
+        avg = AveragePooling2D(5,strides=3,border_mode='same')(prev_layer)
         conv1 = Conv2D(filters=128, kernel_size=1, strides=1, padding='valid', activation='relu', kernel_regularizer=l2(0.0002))(avg)
         flat = Flatten()(conv1)
         dense1 = Dense(1024, activation='relu', kernel_regularizer=l2(0.0002))(flat)
@@ -74,11 +76,15 @@ class GoogLeNet():
     def initialize(self):
         
         K.clear_session()
-        
+
+        if len(self.X.shape) == 3:
+            self.X = self.X.reshape(self.X.shape[0],self.X.shape[1],self.X.shape[2],1)
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],1))
+        else:
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],3))
+
         n_outputs = self.n_outputs
-        input_shape = list(self.X.shape[1:])
         
-        inp = Input(shape=[self.X.shape[1],self.X.shape[2],3])
         #block 1
         conv1 = Conv2D(filters=64,kernel_size=7,strides=1,border_mode='same',kernel_regularizer=l2(0.0002),activation='relu')(inp)
         max1 = MaxPool2D(3,strides=2,border_mode='same')(conv1)
@@ -107,7 +113,7 @@ class GoogLeNet():
         inception_5a = self.create_Inception([256,160,320,32,128,128],max4)
         inception_5b = self.create_Inception([384,192,384,48,192,192],inception_5a)
         
-        avgpool = AveragePooling2D(7,strides=1,border_mode='valid')(inception_5b)
+        avgpool = AveragePooling2D(7,strides=1,border_mode='same')(inception_5b)
         flatten = Flatten()(avgpool)
         dropout = Dropout(0.4)(flatten)
         dense = Dense(n_outputs)(dropout)
@@ -136,4 +142,11 @@ class GoogLeNet():
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
         predictions = self.model.predict(X)[2]
         return np.argmax(predictions)
+
+if __name__ == '__main__':
+
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    model = GoogLeNet(X_train,y_train)
+    model.train(1)
+    model.predict(X_train[0])
         
