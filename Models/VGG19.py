@@ -11,6 +11,8 @@ from keras.optimizers import SGD
 from keras.datasets import mnist
 import pydot
 import graphviz
+import warnings
+warnings.filterwarnings("ignore")
 
 class VGG19():
     """
@@ -34,7 +36,10 @@ class VGG19():
             self.initialize()
         else:
             self.model = load_model(weights)
-        
+    
+    def transfer(self,path):
+        self.model = load_model(path)
+            
     def initialize(self):
         
         K.clear_session()
@@ -45,9 +50,9 @@ class VGG19():
         
         if len(self.X.shape) == 3:
             self.X = self.X.reshape(self.X.shape[0],self.X.shape[1],self.X.shape[2],1)
-            inp = Input(shape=[self.X.shape[1],self.X.shape[2],1])
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],1))
         else:
-            inp = Input(shape=[self.X.shape[1],self.X.shape[2],3])
+            inp = Input(shape=(self.X.shape[1],self.X.shape[2],3))
 
         conv1 = Conv2D(64,kernel_size=3,border_mode='same',activation="relu")(inp)
         conv2 = Conv2D(64,kernel_size=3,border_mode='same',activation='relu')(conv1)
@@ -108,6 +113,9 @@ class VGG19():
 if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    #mini
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     model = VGG19(X_train,y_train)
     model.train(1)
-    model.predict(X_train[0])      
+     

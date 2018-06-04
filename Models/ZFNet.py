@@ -11,6 +11,8 @@ from keras.optimizers import SGD
 from keras.datasets import mnist
 import pydot
 import graphviz
+import warnings
+warnings.filterwarnings("ignore")
 
 class ZFNet():
     """
@@ -34,7 +36,10 @@ class ZFNet():
             self.initialize()
         else:
             self.model = load_model(weights)
-        
+    
+    def transfer(self,path):
+        self.model = load_model(path)
+            
     def initialize(self):
         
         K.clear_session()
@@ -48,7 +53,7 @@ class ZFNet():
             inp = Input(shape=(self.X.shape[1],self.X.shape[2],1))
         else:
             inp = Input(shape=(self.X.shape[1],self.X.shape[2],3))
-            
+
         conv1 = Conv2D(96,kernel_size=7,strides=2,border_mode='valid',activation='relu')(inp)
         max1 = MaxPool2D(3,strides=2,border_mode='same')(conv1)
         dropout1 = Dropout(0.5)(max1)
@@ -96,7 +101,10 @@ class ZFNet():
 if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    #mini
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     model = ZFNet(X_train,y_train)
     model.train(1)
-    model.predict(X_train[0])
+
         

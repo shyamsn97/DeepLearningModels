@@ -11,6 +11,8 @@ from keras.optimizers import SGD
 from keras.datasets import mnist
 import pydot
 import graphviz
+import warnings
+warnings.filterwarnings("ignore")
 
 class LeNet5():
     """
@@ -34,6 +36,9 @@ class LeNet5():
             self.initialize()
         else:
             self.model = load_model(weights)
+
+    def transfer(self,path):
+        self.model = load_model(path)
             
     def reshape_matrix(self,X):
         
@@ -93,6 +98,8 @@ class LeNet5():
 if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    #mini
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     lenet = LeNet5(X_train,y_train)
     lenet.train(1)
-    lenet.predict(X_train[0])

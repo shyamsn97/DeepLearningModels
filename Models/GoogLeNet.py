@@ -12,6 +12,8 @@ from keras.datasets import mnist
 from keras.regularizers import l2
 import pydot
 import graphviz
+import warnings
+warnings.filterwarnings("ignore")
 
 class GoogLeNet():
     """
@@ -37,6 +39,9 @@ class GoogLeNet():
         else:
             self.model = load_model(weights)
     
+    def transfer(self,path):
+        self.model = load_model(path)
+        
     def create_Inception(self,params,prev_layer):
         """
             creates a dimensionality reduced inception layer
@@ -133,20 +138,32 @@ class GoogLeNet():
         self.model.fit(self.X, [self.y,self.y,self.y] ,validation_split=0.1, epochs=epochs,verbose=1)
         if save == True:
             self.model.save('saved_models/GoogLeNet.h5')
-        loss, acc = self.model.evaluate(self.X, self.y, verbose=0)
+        acc = self.calc_acc()
         print('Train Accuracy: %f' % (acc*100))
         
     def predict(self,X):
         
         if len(X.shape) == 3:
             X = X.reshape(1,X.shape[0],X.shape[1],X.shape[2])
+            predictions = self.model.predict(X)[2]
+            return np.argmax(predictions)
         predictions = self.model.predict(X)[2]
-        return np.argmax(predictions)
+        return np.argmax(predictions,axis=1)
+
+    def calc_acc(self):
+
+        predictions = self.predict(self.X)
+        accvec = np.argmax(self.y,axis=1) - predictions
+        acc = (np.where(accvec == 0)[0].shape[0])/self.y.shape[0]
+        return acc
+
 
 if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    #mini
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     model = GoogLeNet(X_train,y_train)
     model.train(1)
-    model.predict(X_train[0])
         

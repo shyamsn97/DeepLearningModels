@@ -11,6 +11,8 @@ from keras.optimizers import SGD
 from keras.datasets import mnist
 import pydot
 import graphviz
+import warnings
+warnings.filterwarnings("ignore")
 
 class AllCNN():
     """
@@ -35,6 +37,9 @@ class AllCNN():
             self.initialize()
         else:
             self.model = load_model(weights)
+    
+    def transfer(self,path):
+        self.model = load_model(path)
         
     def initialize(self):
         
@@ -91,7 +96,10 @@ class AllCNN():
 if __name__ == '__main__':
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    #mini
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     model = AllCNN(X_train,y_train)
     model.train(1)
-    model.predict(X_train[0])
+
     
