@@ -15,6 +15,10 @@
 
 ## How to use 
   #### Train the AllCNN Model on MNIST dataset for 100 epochs:
+      from keras.datasets import mnist
+      import sys
+      sys.append("Models/")
+      from AllCNN import AllCNN
       (X_train, y_train), (X_test, y_test) = mnist.load_data()
       model = AllCNN(X_train,y_train)
       model.train(100)
