@@ -13,6 +13,14 @@
   - [VGG19](Models/VGG19.py)
   - [ZFNet](Models/ZFNet.py)
 
+## How to use 
+  #### Train the AllCNN Model on MNIST dataset for 100 epochs:
+      (X_train, y_train), (X_test, y_test) = mnist.load_data()
+      model = AllCNN(X_train,y_train)
+      model.train(100)
+  #### Predict input:
+      predictions = model.predict(input)
+
 ### [Examples](Applications/)
 
 
