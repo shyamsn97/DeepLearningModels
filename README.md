@@ -9,6 +9,7 @@
   - [General 2D MultiChannel CNN](Models/MultiChannelCNN2d.py)
   - [GoogLeNet (Inception v1)](Models/GoogLeNet.py)
   - [LeNet-5](Models/LeNet5.py)
+  - [Variational AutoEncoder](Models/VAE.py)
   - [VGG16](Models/VGG16.py)
   - [VGG19](Models/VGG19.py)
   - [ZFNet](Models/ZFNet.py)
